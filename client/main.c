@@ -5,6 +5,19 @@
  *      Author: Diego Rubin
  */
 
-int main(int argc, char **argv){
+#include <gtk/gtk.h>
+
+#include "window.h"
+
+int main(int argc, char *argv[])
+{
+	gtk_init(&argc,&argv);
+
+	GtkWidget *main_window;
+	main_window = create_main_window();
+
+	gtk_widget_show_all(main_window);
+	gtk_main();
+
 	return 0;
 }

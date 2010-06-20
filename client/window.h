@@ -17,7 +17,6 @@ GtkWidget *create_main_window();
 /* buttons */
 GtkWidget *button_connect_server;
 
-/* text view */
 GtkWidget *slate;
 GtkWidget *entry_message;
 
