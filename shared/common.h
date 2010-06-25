@@ -1,5 +1,5 @@
-#ifndef BIDICHAT_H_
-#define BIDICHAT_H_
+#ifndef COMMON_H_
+#define COMMON_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,4 +16,4 @@
 
 int setup_client(const char *host, int port);
 
-#endif /* BIDICHAT_H_ */
+#endif /* COMMON_H_ */
