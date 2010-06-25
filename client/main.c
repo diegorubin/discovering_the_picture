@@ -12,6 +12,8 @@
 int main(int argc, char *argv[])
 {
 	gtk_init(&argc,&argv);
+	int i;
+	i =1;
 
 	GtkWidget *main_window;
 	main_window = create_main_window();

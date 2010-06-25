@@ -69,9 +69,10 @@ static void draw_brush( GtkWidget *widget,
 static gboolean button_press_event( GtkWidget      *widget,
                                     GdkEventButton *event )
 {
+  int x = event->x;
+  int y = event->y;
   if (event->button == 1 && pixmap != NULL)
-    draw_brush (widget, event->x, event->y);
-
+	  map[x][y] = 1;
   return TRUE;
 }
 
@@ -85,14 +86,13 @@ static gboolean motion_notify_event( GtkWidget *widget,
     gdk_window_get_pointer (event->window, &x, &y, &state);
   else
     {
-      x = event->x;
-      y = event->y;
+      x = (int) event->x;
+      y = (int) event->y;
       state = event->state;
     }
 
-  if (state & GDK_BUTTON1_MASK && pixmap != NULL)
-    draw_brush (widget, x, y);
-
+  if (state & GDK_BUTTON1_MASK && pixmap != NULL && x >= 0 && y >= 0 && x <= MAX_WIDTH && y <= MAX_HEIGHT)
+	map[x][y] = 1;
   return TRUE;
 }
 
@@ -103,7 +103,8 @@ GtkWidget *create_main_window()
 	/* configurações da janela */
 	gtk_window_set_title(GTK_WINDOW(window), "Discovering The Picture");
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
-	gtk_window_set_default_size(GTK_WINDOW(window),900,700);
+	gtk_window_set_default_size(GTK_WINDOW(window),800,600);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 
 	/* configurações dos widgets */
 	GtkWidget *table = gtk_table_new(5,2, FALSE);
@@ -151,7 +152,27 @@ GtkWidget *create_main_window()
 	g_signal_connect(G_OBJECT(window), "delete_event", G_CALLBACK(program_quit),NULL);
 	g_signal_connect(G_OBJECT(button_connect_server), "clicked", G_CALLBACK(button_connect_server_clicked), NULL);
 
+	initialize_map(map);
+	activesocket = -1;
+
 	return window;
+}
+
+void draw_map(char m[MAX_WIDTH][MAX_HEIGHT])
+{
+	int i,j;
+	for(i = 0; i <= MAX_WIDTH-1; i++)
+		for(j = 0; j <= MAX_HEIGHT-1; j++)
+			if(m[i][j])
+				draw_brush(slate,i,j);
+}
+
+void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT])
+{
+	int i,j;
+	for(i = 0; i<= MAX_WIDTH-1; i++ )
+		for(j = 0; j <= MAX_HEIGHT-1; j++)
+			m[i][j] = 0;
 }
 
 /* Implementacao dos callbacks */
@@ -164,6 +185,9 @@ gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
 
 void button_connect_server_clicked(GtkWidget *widget, gpointer data)
 {
+	if((activesocket = dialog_connect_server_show(GTK_WINDOW(window))) > 0){
+		gtk_widget_hide(button_connect_server);
+	}
 }
 
 void button_send_message_clicked(GtkWidget *widget, gpointer data)

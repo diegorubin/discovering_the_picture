@@ -8,7 +8,11 @@
 #ifndef WINDOW_H_
 #define WINDOW_H_
 
+#define MAX_WIDTH 800
+#define MAX_HEIGHT 600
+
 #include <gtk/gtk.h>
+#include "dialog_connect_server.h"
 
 GtkWidget *window;
 GtkWidget *create_main_window();
@@ -20,8 +24,15 @@ GtkWidget *button_connect_server;
 GtkWidget *slate;
 GtkWidget *entry_message;
 
+char map[MAX_WIDTH][MAX_HEIGHT];
+static int activesocket;
+
 /* separator */
 GtkWidget *h_separator;
+
+/* Methods */
+void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT]);
+void draw_map(char m[MAX_WIDTH][MAX_HEIGHT]);
 
 /* Callbacks */
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data);
