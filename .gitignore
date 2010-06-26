@@ -1,12 +1,4 @@
-# Arquivos do eclipse
-.cproject
-.project
-Debug
-Release
-
 *.o
-
-server/common.c
-server/common.h
-server/util.h
-server/util.c
+client
+server
+Makefile.dep
