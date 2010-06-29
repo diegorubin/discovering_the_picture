@@ -15,5 +15,6 @@
 #include "util.h"
 
 int setup_client(const char *host, int port);
+int setup_server(const struct sockaddr_in *address);
 
 #endif /* COMMON_H_ */

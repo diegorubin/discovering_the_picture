@@ -6,18 +6,13 @@
  */
 #include "common.h"
 
-extern GtkWidget *window;
-
-int activesocket = -1;
-
 /**
  * Configura a conexão, como cliente.
  *
  * @param address Endereço remoto a se conectar.
  * @return Soquete de comunicação, já conectado com a outra parte.
  */
-int
-setup_client(const char *host, int port)
+int setup_client(const char *host, int port)
 {
 	int clientsock;
 
@@ -37,4 +32,17 @@ setup_client(const char *host, int port)
 
 	printf("*** Conexão estabelecida.\n");
 	return clientsock;
+}
+
+int setup_server(const struct sockaddr_in *address)
+{
+
+	int serversock = socket(PF_INET, SOCK_STREAM, 0);
+	if(serversock < 0 )
+		fatal("Erro ao criar socket do servidor.");
+		
+	if (bind(serversock,(struct sockaddr*) address, sizeof(*address)) < 0)
+		fatal("Erro na criação da porta.");
+	
+	return serversock;
 }

@@ -14,6 +14,7 @@
 GtkWidget *dialog;
 GtkWidget *entry_host;
 GtkWidget *entry_port;
+GtkWidget *entry_nickname;
 
 int dialog_start_server_show(GtkWindow *parent);
 void dialog_connect_server_response(GtkWidget *widet, gpointer data);

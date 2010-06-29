@@ -15,23 +15,29 @@ int dialog_connect_server_show(GtkWindow *parent)
 	int socket = 0;
 
 	dialog = gtk_dialog_new_with_buttons("Informe a porta",
-										parent,
-										GTK_DIALOG_DESTROY_WITH_PARENT,
-										GTK_STOCK_OK,
-										GTK_RESPONSE_ACCEPT,
-										NULL);
-
+					parent,
+					GTK_DIALOG_DESTROY_WITH_PARENT,
+					GTK_STOCK_OK,
+					GTK_RESPONSE_ACCEPT,
+					NULL);
+	GtkWidget *label_nickname = gtk_label_new("Apelido:");
 	GtkWidget *label_host = gtk_label_new("Servidor:");
 	GtkWidget *label_port = gtk_label_new("Porta:");
 
+	entry_nickname = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry_nickname),"anonimo");
 	entry_host = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry_host),"127.0.0.1");
 	entry_port = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry_port),"9090");
 
-	GtkWidget *table = gtk_table_new(1,4,FALSE);
+	GtkWidget *table = gtk_table_new(2,4,FALSE);
 	gtk_table_attach_defaults(GTK_TABLE(table),label_host,0,1,0,1);
 	gtk_table_attach_defaults(GTK_TABLE(table),entry_host,1,2,0,1);
 	gtk_table_attach_defaults(GTK_TABLE(table),label_port,2,3,0,1);
 	gtk_table_attach_defaults(GTK_TABLE(table),entry_port,3,4,0,1);
+	gtk_table_attach_defaults(GTK_TABLE(table),label_nickname,2,3,1,2);
+	gtk_table_attach_defaults(GTK_TABLE(table),entry_nickname,3,4,1,2);
 
 	g_signal_connect(dialog, "response", G_CALLBACK(dialog_connect_server_response), dialog);
 

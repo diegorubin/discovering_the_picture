@@ -18,7 +18,4 @@ void fatal(const char *msg, ...);
 
 char * chop(char *str);
 
-#define MIN(a, b) ((b) < (a) ? (b) : (a))
-#define MAX(a, b) ((b) > (a) ? (b) : (a))
-
 #endif
