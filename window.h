@@ -31,7 +31,7 @@ GtkWidget *h_separator;
 /* Methods */
 void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT]);
 void draw_map(char m[MAX_WIDTH][MAX_HEIGHT]);
-void send_pixmap();
+void send_point(int x,int y);
 
 /* Callbacks */
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data);

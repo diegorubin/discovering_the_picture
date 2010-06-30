@@ -10,19 +10,17 @@
 int clients[9];
 int last_client;
 
-char pixmap[MAX_WIDTH][MAX_HEIGHT];
-
 void initialize_clients(){
     int i;
     for(i = 0;i <= 9; i++)
         clients[i] = 0;
 }
 
-void send_others(int owner){
+void send_others(int owner, message_t new){
     int i;
     for(i = 0; i <= last_client; i++)
         if(i != owner)
-            send(clients[i], pixmap, sizeof(pixmap), 0);
+            send(clients[i], (char *)&new, sizeof(new), 0);
     
 }
 
@@ -55,6 +53,7 @@ int main(int argc, char **argv){
 
 	    //nova conexao
 		if (pfds[0].revents != 0) {
+		    printf("nova conexao de client.\n");
 		    clients[last_client] = accept(socket,NULL,NULL);
 		    		    
 		    pfds[last_client+1].fd = clients[last_client];
@@ -66,10 +65,14 @@ int main(int argc, char **argv){
 		//recebendo do cliente
 		for(i = 1; i <= 10; i++){
 		    if (pfds[i].revents != 0) {
-		        int r = recv(clients[i-1], pixmap, sizeof(pixmap),0);
-		        if(r <= 0)
-		            break;
-		        send_others(i-1);
+		        char buffer[8192];
+		        
+		        int r = recv(clients[i-1],buffer, sizeof(buffer),0);
+		        if(r > 0){
+		           message_t *received = (message_t*) &buffer ;
+		           printf("recebido informacao de client.\n");
+		           send_others(i-1, *received);
+		         }
 		    }
 		}
 		

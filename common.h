@@ -17,11 +17,14 @@
 #define MAX_WIDTH 800
 #define MAX_HEIGHT 600
 
+typedef struct message message_t;
+
 int setup_client(const char *host, int port);
 int setup_server(const struct sockaddr_in *address);
 
 struct message {
-	char map[MAX_WIDTH][MAX_HEIGHT];
+	int x;
+	int y;
 };
 
 #endif /* COMMON_H_ */

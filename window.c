@@ -73,7 +73,7 @@ static gboolean button_press_event( GtkWidget      *widget,
   int y = event->y;
   if (event->button == 1 && pixmap != NULL){
 	  map[x][y] = 1;
-	  send_pixmap();
+	  send_point(x,y);
   }
   return TRUE;
 }
@@ -95,6 +95,7 @@ static gboolean motion_notify_event( GtkWidget *widget,
 
   if (state & GDK_BUTTON1_MASK && pixmap != NULL && x >= 0 && y >= 0 && x <= MAX_WIDTH && y <= MAX_HEIGHT){
 	map[x][y] = 1;
+	send_point(x,y);
   }
 
   return TRUE;
@@ -175,13 +176,13 @@ void main_poll(){
 		poll(pfds, 1, 5);
 
 		if(pfds[0].revents != 0){
-		    char new_map[MAX_WIDTH][MAX_HEIGHT];
-		    initialize_map(new_map);
-			int r = recv(activesocket, new_map, sizeof(new_map),0);
-		    if(r <= 0)
-			    break;
-			
-			draw_map(new_map);
+		   char buffer[8192];
+		        
+            int r = recv(activesocket,buffer, sizeof(buffer),0);
+            if(r > 0){
+               message_t *received = (message_t*) &buffer ;
+               draw_brush(slate,received->x, received->y);
+		    }
 		}
 
 	}
@@ -192,8 +193,10 @@ void draw_map(char m[MAX_WIDTH][MAX_HEIGHT])
 	int i,j;
 	for(i = 0; i <= MAX_WIDTH-1; i++)
 		for(j = 0; j <= MAX_HEIGHT-1; j++)
-			if(m[i][j])
-				draw_brush(slate,i,j);
+			if(m[i][j]){
+			    draw_brush(slate,i,j);
+	            printf("desenhando %d:%d\n",i,j);
+			}
 }
 
 void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT])
@@ -204,9 +207,12 @@ void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT])
 			m[i][j] = 0;
 }
 
-void send_pixmap()
+void send_point(int x, int y)
 {
-    send(activesocket, pixmap, sizeof(pixmap), 0);
+    message_t new;
+    new.x = x;
+    new.y = y;
+    send(activesocket, (char *)&new, sizeof(new), 0);
 }
 
 /* Implementacao dos callbacks */
