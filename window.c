@@ -71,8 +71,10 @@ static gboolean button_press_event( GtkWidget      *widget,
 {
   int x = event->x;
   int y = event->y;
-  if (event->button == 1 && pixmap != NULL)
+  if (event->button == 1 && pixmap != NULL){
 	  map[x][y] = 1;
+	  send_pixmap();
+  }
   return TRUE;
 }
 
@@ -91,8 +93,10 @@ static gboolean motion_notify_event( GtkWidget *widget,
       state = event->state;
     }
 
-  if (state & GDK_BUTTON1_MASK && pixmap != NULL && x >= 0 && y >= 0 && x <= MAX_WIDTH && y <= MAX_HEIGHT)
+  if (state & GDK_BUTTON1_MASK && pixmap != NULL && x >= 0 && y >= 0 && x <= MAX_WIDTH && y <= MAX_HEIGHT){
 	map[x][y] = 1;
+  }
+
   return TRUE;
 }
 
@@ -158,6 +162,31 @@ GtkWidget *create_main_window()
 	return window;
 }
 
+void main_poll(){
+    while(1){
+		while (gtk_events_pending ())
+			gtk_main_iteration();
+		struct pollfd pfds[2];
+
+		//descritor de um arquivo de buffer que sera alimentado pela interface.
+		pfds[0].fd = activesocket;
+		pfds[0].events = POLLIN;
+
+		poll(pfds, 1, 5);
+
+		if(pfds[0].revents != 0){
+		    char new_map[MAX_WIDTH][MAX_HEIGHT];
+		    initialize_map(new_map);
+			int r = recv(activesocket, new_map, sizeof(new_map),0);
+		    if(r <= 0)
+			    break;
+			
+			draw_map(new_map);
+		}
+
+	}
+}
+
 void draw_map(char m[MAX_WIDTH][MAX_HEIGHT])
 {
 	int i,j;
@@ -175,6 +204,11 @@ void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT])
 			m[i][j] = 0;
 }
 
+void send_pixmap()
+{
+    send(activesocket, pixmap, sizeof(pixmap), 0);
+}
+
 /* Implementacao dos callbacks */
 
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
@@ -190,6 +224,3 @@ void button_connect_server_clicked(GtkWidget *widget, gpointer data)
 	}
 }
 
-void button_send_message_clicked(GtkWidget *widget, gpointer data)
-{
-}

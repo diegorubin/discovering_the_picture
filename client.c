@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 	main_window = create_main_window();
 
 	gtk_widget_show_all(main_window);
+	main_poll();
 	gtk_main();
 
 	return 0;
