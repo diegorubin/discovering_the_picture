@@ -6,12 +6,6 @@
  */
 #include "common.h"
 
-/**
- * Configura a conexão, como cliente.
- *
- * @param address Endereço remoto a se conectar.
- * @return Soquete de comunicação, já conectado com a outra parte.
- */
 int setup_client(const char *host, int port)
 {
 	int clientsock;

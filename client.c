@@ -3,6 +3,8 @@
  *
  *  Created on: Jun 20, 2010
  *      Author: Diego Rubin
+ *
+ *  Arquivo principal do aplicação cliente.
  */
 
 #include <gtk/gtk.h>

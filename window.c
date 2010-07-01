@@ -51,7 +51,7 @@ static void draw_brush( GtkWidget *widget,
                         gdouble    y)
 {
   GdkRectangle update_rect;
-
+  
   update_rect.x = x - 5;
   update_rect.y = y - 5;
   update_rect.width = 5;
@@ -72,8 +72,8 @@ static gboolean button_press_event( GtkWidget      *widget,
   int x = event->x;
   int y = event->y;
   if (event->button == 1 && pixmap != NULL){
-	  map[x][y] = 1;
 	  send_point(x,y);
+	  draw_brush(slate,x,y);
   }
   return TRUE;
 }
@@ -94,7 +94,7 @@ static gboolean motion_notify_event( GtkWidget *widget,
     }
 
   if (state & GDK_BUTTON1_MASK && pixmap != NULL && x >= 0 && y >= 0 && x <= MAX_WIDTH && y <= MAX_HEIGHT){
-	map[x][y] = 1;
+	draw_brush(slate,x,y);
 	send_point(x,y);
   }
 
@@ -119,16 +119,14 @@ GtkWidget *create_main_window()
 	slate = gtk_drawing_area_new();
 	gtk_drawing_area_size(GTK_DRAWING_AREA(slate),800,600);
 
-	entry_message = gtk_entry_new();
-	gtk_entry_set_width_chars(GTK_ENTRY(entry_message),30);
-	gtk_entry_buffer_set_max_length(gtk_entry_get_buffer(GTK_ENTRY(entry_message)),254);
+	label_nickname = gtk_label_new("Ultimo ponto feito por:");
 
 	h_separator = gtk_hseparator_new();
 
 	gtk_table_attach(GTK_TABLE(table), button_connect_server, 1, 2, 0, 1,GTK_SHRINK,GTK_SHRINK,0,0);
 	gtk_table_attach_defaults(GTK_TABLE(table), slate, 0, 2, 1, 2);
 	gtk_table_attach(GTK_TABLE(table), h_separator, 0, 2, 2, 3,GTK_SHRINK,GTK_SHRINK,0,0);
-	gtk_table_attach(GTK_TABLE(table), entry_message, 0, 2, 3, 4, GTK_EXPAND, GTK_SHRINK,0,5);
+	gtk_table_attach(GTK_TABLE(table), label_nickname, 0, 2, 3, 4, GTK_EXPAND, GTK_SHRINK,0,5);
 
 
 	gtk_container_add(GTK_CONTAINER(window), table);
@@ -157,7 +155,6 @@ GtkWidget *create_main_window()
 	g_signal_connect(G_OBJECT(window), "delete_event", G_CALLBACK(program_quit),NULL);
 	g_signal_connect(G_OBJECT(button_connect_server), "clicked", G_CALLBACK(button_connect_server_clicked), NULL);
 
-	initialize_map(map);
 	activesocket = -1;
 
 	return window;
@@ -182,29 +179,19 @@ void main_poll(){
             if(r > 0){
                message_t *received = (message_t*) &buffer ;
                draw_brush(slate,received->x, received->y);
+               set_last_client(received->nickname);
 		    }
 		}
 
 	}
 }
 
-void draw_map(char m[MAX_WIDTH][MAX_HEIGHT])
-{
-	int i,j;
-	for(i = 0; i <= MAX_WIDTH-1; i++)
-		for(j = 0; j <= MAX_HEIGHT-1; j++)
-			if(m[i][j]){
-			    draw_brush(slate,i,j);
-	            printf("desenhando %d:%d\n",i,j);
-			}
-}
-
-void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT])
-{
-	int i,j;
-	for(i = 0; i<= MAX_WIDTH-1; i++ )
-		for(j = 0; j <= MAX_HEIGHT-1; j++)
-			m[i][j] = 0;
+void set_last_client(char client[100]){
+  
+  char label[200] = "Ultimo ponto feito por: \0";
+  strcat(label,client);
+  
+  gtk_label_set_text(GTK_LABEL(label_nickname),label);
 }
 
 void send_point(int x, int y)
@@ -212,6 +199,7 @@ void send_point(int x, int y)
     message_t new;
     new.x = x;
     new.y = y;
+    strcpy(new.nickname,nickname);
     send(activesocket, (char *)&new, sizeof(new), 0);
 }
 

@@ -10,9 +10,9 @@ Projeto final de Sistemas Operacionais 2
 2-Estrutura do Projeto
 ----------------------
 
-  O projeto é composto por duas aplicações:
-  * server:
-    Responsável por gerenciar a comunicação entre as aplicações clientes. O server recebe informações e envia aos outros clientes conectados.
+  O projeto é composto por duas aplicações
+  
+  * server:  Responsável por gerenciar a comunicação entre as aplicações clientes. O server recebe informações e envia aos outros clientes conectados.
   * client:
     Interface gráfica que recebe a ação de um usuário e que envia ou recebe informações de outro cliente através do servidor.
     

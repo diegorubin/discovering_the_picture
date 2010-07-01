@@ -3,12 +3,17 @@
  *
  *  Created on: May 30, 2010
  *      Author: diego
+ *
+ *  Implementação do dialogo de conexão com o server.
+ *
  */
 
 #include "dialog_connect_server.h"
 
 const char *server_host;
 int server_port = 0;
+
+extern char nickname[100];
 
 int dialog_connect_server_show(GtkWindow *parent)
 {
@@ -57,5 +62,6 @@ void dialog_connect_server_response(GtkWidget *widet, gpointer data)
 {
 	server_host = gtk_entry_get_text(GTK_ENTRY(entry_host));
 	server_port = atoi(gtk_entry_get_text(GTK_ENTRY(entry_port)));
+	strcpy(nickname,gtk_entry_get_text(GTK_ENTRY(entry_nickname)));
 	gtk_dialog_set_response_sensitive(GTK_DIALOG(dialog), GTK_RESPONSE_ACCEPT, TRUE);
 }

@@ -20,9 +20,9 @@ GtkWidget *create_main_window();
 GtkWidget *button_connect_server;
 
 GtkWidget *slate;
-GtkWidget *entry_message;
+GtkWidget *label_nickname;
 
-char map[MAX_WIDTH][MAX_HEIGHT];
+char nickname[100];
 int activesocket;
 
 /* separator */
@@ -30,8 +30,8 @@ GtkWidget *h_separator;
 
 /* Methods */
 void initialize_map(char m[MAX_WIDTH][MAX_HEIGHT]);
-void draw_map(char m[MAX_WIDTH][MAX_HEIGHT]);
 void send_point(int x,int y);
+void set_last_client(char client[100]);
 
 /* Callbacks */
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data);

@@ -22,7 +22,9 @@ typedef struct message message_t;
 int setup_client(const char *host, int port);
 int setup_server(const struct sockaddr_in *address);
 
+/* Estrutura das mensagens trocadas */
 struct message {
+    char nickname[100];
 	int x;
 	int y;
 };
